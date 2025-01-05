@@ -95,7 +95,7 @@ const Healthcare = () => {
         throw new Error("Invalid provider address");
       }
 
-      const tx = await contract.revokeProvider(providerAddress);
+      const tx = await contract.revokeProviderAuthorization(providerAddress);
       await tx.wait();
       alert(`Provider ${providerAddress} authorization revoked successfully`);
       setProviderAddress("");
@@ -120,12 +120,11 @@ const Healthcare = () => {
         throw new Error("All fields are required");
       }
 
-      const tx = await contract.addMedicalRecord(
+      const tx = await contract.addRecords(
         patientID,
         patientName,
         diagnosis,
-        treatment,
-        medication
+        treatment
       );
       await tx.wait();
       alert("Patient record added successfully");
@@ -151,7 +150,7 @@ const Healthcare = () => {
         throw new Error("Patient ID is required");
       }
 
-      const records = await contract.getMedicalRecords(patientID);
+      const records = await contract.getPatientRecords(patientID);
       setPatientsRecord(records);
     } catch (error) {
       setError(`Error fetching patient records: ${error.message}`);
@@ -290,22 +289,16 @@ const Healthcare = () => {
             {patientsRecord.map((record, index) => (
               <li key={index} className="record-item">
                 <p>
-                  <strong>Record ID:</strong> {record.recordId.toString()}
+                  <strong>Record ID:</strong> {record.recordID.toString()}
                 </p>
                 <p>
-                  <strong>Patient Name:</strong> {record.name}
+                  <strong>Patient Name:</strong> {record.patientName}
                 </p>
                 <p>
                   <strong>Diagnosis:</strong> {record.diagnosis}
                 </p>
                 <p>
                   <strong>Treatment:</strong> {record.treatment}
-                </p>
-                <p>
-                  <strong>Medication:</strong> {record.medication}
-                </p>
-                <p>
-                  <strong>Provider:</strong> {record.provider}
                 </p>
               </li>
             ))}
